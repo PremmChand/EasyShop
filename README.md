@@ -87,31 +87,53 @@ com.example.easyshop
  ->Add your google-services.json in the app/ folder
  ->Set up Firebase Authentication and Firestore in the Firebase Console
 
-## 📸 Screenshots
+## 📸 App Screenshots
 
-### 🚀 Initial Screen
-![Initial Screen](./assets/images/initial_screen.png)
-
-### 🔐 Login Screen
-![Login Screen](./assets/images/login_screen.png)
-
-### 📝 Register Screen
-![Register Screen](./assets/images/register_screen.png)
-
-### 🏠 Home Screen
-![Homee Screen](./assets/images/homee_screen.png)
-
-### 📦 Items Screen
-![Items Screen](./assets/images/items_screen.png)
-
-### 🛒 Add to Cart Screen
-![AddCart Screen](./assets/images/addCart_screen.png)
-
-### ➕➖ Add/Remove Screen
-![AddRemove Screen](./assets/images/addremove_screen.png)
-
-### 📦 Orders Screen
-![Order Screen](./assets/images/order_screen.png)
-
-### 🔓 Logout Screen
-![Logout Screen](./assets/images/logout_screen.png)
+<table>
+  <tr>
+    <td align="center">
+      <strong>🚀 Initial Screen</strong><br>
+      <img src="./assets/images/initial_screen.png" width="200"/>
+    </td>
+    <td align="center">
+      <strong>🔐 Login Screen</strong><br>
+      <img src="./assets/images/login_screen.png" width="200"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>📝 Register Screen</strong><br>
+      <img src="./assets/images/register_screen.png" width="200"/>
+    </td>
+    <td align="center">
+      <strong>🏠 Homee Screen</strong><br>
+      <img src="./assets/images/homee_screen.png" width="200"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>📦 Items Screen</strong><br>
+      <img src="./assets/images/items_screen.png" width="200"/>
+    </td>
+    <td align="center">
+      <strong>🛒 AddCart Screen</strong><br>
+      <img src="./assets/images/addCart_screen.png" width="200"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>➕➖ Add/Remove Screen</strong><br>
+      <img src="./assets/images/addremove_screen.png" width="200"/>
+    </td>
+    <td align="center">
+      <strong>📦 Orders Screen</strong><br>
+      <img src="./assets/images/order_screen.png" width="200"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>🔓 Logout Screen</strong><br>
+      <img src="./assets/images/logout_screen.png" width="200"/>
+    </td>
+  </tr>
+</table>
