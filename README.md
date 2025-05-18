@@ -86,5 +86,32 @@ com.example.easyshop
 3. Configure Firebase:
  ->Add your google-services.json in the app/ folder
  ->Set up Firebase Authentication and Firestore in the Firebase Console
-4. 
-   
+
+## 📸 Screenshots
+
+### 🚀 Initial Screen
+![Initial Screen](./assets/images/initial_screen.png)
+
+### 🔐 Login Screen
+![Login Screen](./assets/images/login_screen.png)
+
+### 📝 Register Screen
+![Register Screen](./assets/images/register_screen.png)
+
+### 🏠 Home Screen
+![Homee Screen](./assets/images/homee_screen.png)
+
+### 📦 Items Screen
+![Items Screen](./assets/images/items_screen.png)
+
+### 🛒 Add to Cart Screen
+![AddCart Screen](./assets/images/addCart_screen.png)
+
+### ➕➖ Add/Remove Screen
+![AddRemove Screen](./assets/images/addremove_screen.png)
+
+### 📦 Orders Screen
+![Order Screen](./assets/images/order_screen.png)
+
+### 🔓 Logout Screen
+![Logout Screen](./assets/images/logout_screen.png)
