@@ -188,7 +188,7 @@ com.example.easyshop
 
 </table>
 
-<p align="center">
+<p>
   <b>👨‍💻 Developed by Premm Chand</b>
 </p>
 
