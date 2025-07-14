@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -19,14 +20,36 @@ import androidx.compose.ui.unit.dp
 import com.example.easyshop.components.ProductCardReadOnly
 import com.example.easyshop.components.ProductItemView
 import com.example.easyshop.model.ProductModel
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.firestore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavouritePage(modifier: Modifier = Modifier) {
-
     val favorites = remember { mutableStateListOf<ProductModel>() }
+    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
-    // TODO: Fetch favorites from Firestore or local storage
+    LaunchedEffect(Unit) {
+        // Fetch favorite product IDs
+        Firebase.firestore.collection("users").document(userId).get()
+            .addOnSuccessListener { userDoc ->
+                val favMap = userDoc.get("favorites") as? Map<String, Boolean>
+                val favIds = favMap?.filterValues { it }?.keys?.toList() ?: emptyList()
+
+                if (favIds.isNotEmpty()) {
+                    Firebase.firestore.collection("banners")
+                        .document("stock").collection("products")
+                        .whereIn("id", favIds)
+                        .get()
+                        .addOnSuccessListener { snapshot ->
+                            val products = snapshot.toObjects(ProductModel::class.java)
+                            favorites.clear()
+                            favorites.addAll(products)
+                        }
+                }
+            }
+    }
 
     Scaffold(
         topBar = {

@@ -1,8 +1,13 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
+}
+val localProperties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
 }
 
 android {
@@ -17,6 +22,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "RAZORPAY_KEY_ID", "\"${localProperties["RAZORPAY_KEY_ID"]}\"")
+
     }
 
     buildTypes {
@@ -37,6 +45,8 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+
     }
 }
 
@@ -57,6 +67,7 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.androidx.benchmark.traceprocessor.android)
     implementation(libs.androidx.benchmark.macro)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,4 +79,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.0")
     implementation("com.google.accompanist:accompanist-pager:0.28.0") // or latest
     implementation("com.google.accompanist:accompanist-pager-indicators:0.28.0")
+
+    //razorpay
+    implementation("com.razorpay:checkout:1.6.20")
 }

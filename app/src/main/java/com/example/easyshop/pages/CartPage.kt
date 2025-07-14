@@ -1,6 +1,7 @@
 package com.example.easyshop.pages
 
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -34,13 +36,16 @@ fun CartPage(modifier: Modifier = Modifier) {
     DisposableEffect(Unit) {
         val listener = Firebase.firestore.collection("users")
             .document(FirebaseAuth.getInstance().currentUser?.uid ?: "")
-            .addSnapshotListener { it, _ ->
-                it?.toObject(UserModel::class.java)?.let { result ->
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) return@addSnapshotListener
+                snapshot?.toObject(UserModel::class.java)?.let { result ->
                     userModel.value = result
                 }
             }
         onDispose { listener.remove() }
     }
+
+    val isCartEmpty = userModel.value.cartItems.isEmpty()
 
     Column(
         modifier = modifier
@@ -52,20 +57,24 @@ fun CartPage(modifier: Modifier = Modifier) {
             style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        val isCartEmpty = userModel.value.cartItems.isEmpty()
 
         if (isCartEmpty) {
-            // Empty cart message
-            Text(
-                text = "Your cart is empty",
-                fontSize = 16.sp,
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .padding(top = 32.dp)
-            )
+                    .fillMaxSize()
+                    .padding(top = 64.dp),
+            ) {
+                Text(
+                    text = "No items here",
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         } else {
-            // Product list
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)
@@ -75,26 +84,23 @@ fun CartPage(modifier: Modifier = Modifier) {
                     CartItemView(productId = productId, qty = qty)
                 }
             }
-        }
 
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .padding(top = 8.dp),
-            onClick = {
-                if (!isCartEmpty) {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .padding(top = 8.dp),
+                onClick = {
                     GlobalNavigation.navController.navigate("checkout")
                 }
+            ) {
+                Text(
+                    "Checkout",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                )
             }
-        ) {
-            Text(
-                "Checkout",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
         }
+
     }
 }

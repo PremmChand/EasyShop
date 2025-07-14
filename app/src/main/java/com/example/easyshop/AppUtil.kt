@@ -1,11 +1,18 @@
 package com.example.easyshop
 
+import android.app.Activity
 import android.content.Context
 import android.widget.Toast
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
+import com.razorpay.Checkout
+import org.json.JSONObject
+import com.example.easyshop.BuildConfig
+import com.example.easyshop.model.OrderModel
+import com.google.firebase.Timestamp
+import java.util.UUID
 
 object AppUtil {
     fun showToast(context: Context,message:String){
@@ -62,6 +69,35 @@ object AppUtil {
         }
     }
 
+    fun clearCartAndAddToOrders(){
+        val userDoc = Firebase.firestore.collection("users")
+            .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+        userDoc.get().addOnCompleteListener{
+            if(it.isSuccessful){
+                val currentCart = it.result.get("cartItems") as? Map<String,Long>?: emptyMap()
+                val order = OrderModel(
+                    id = "ORD_" + UUID.randomUUID().toString().replace("-","").take(10).uppercase(),
+                    userId =  FirebaseAuth.getInstance().currentUser?.uid!!,
+                    date = Timestamp.now(),
+                    items = currentCart,
+                    status = "ORDERED",
+                    address = it.result.get("address") as String
+                )
+
+                Firebase.firestore.collection("orders")
+                    .document(order.id).set(order)
+                    .addOnCompleteListener{
+                        if(it.isSuccessful){
+                            userDoc.update("cartItems",FieldValue.delete()
+                            )
+                        }
+                    }
+
+            }
+        }
+
+    }
+
     fun getDiscountPercentage() : Float {
         return  10.0f
     }
@@ -69,4 +105,25 @@ object AppUtil {
     fun getTaxPercentage() : Float {
         return  13.0f
     }
+
+    fun startPayment(amount: Float){
+            val checkout  = Checkout()
+            checkout.setKeyID(BuildConfig.RAZORPAY_KEY_ID)
+
+        val options = JSONObject().apply {
+            put("name", "Easy Shop")
+            put("description", "Order Payment")
+            put("currency", "INR")
+            put("amount", (amount * 100).toInt())
+            put("prefill", JSONObject().apply {
+                put("email", "test@example.com")
+                put("contact", "9849589898")
+            })
+        }
+
+        checkout.open(GlobalNavigation.navController.context as Activity, options)
+    }
+
+
+
 }

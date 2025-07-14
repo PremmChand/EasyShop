@@ -132,8 +132,56 @@ com.example.easyshop
   </tr>
   <tr>
     <td align="center">
-      <strong>🔓 Logout Screen</strong><br>
-      <img src="./assets/images/logout_screen.png" width="200"/>
+      <strong>🔓 Order Screen</strong><br>
+      <img src="./assets/images/order.png" width="200"/>
+    </td>
+<td align="center">
+      <strong>🔓 Order Screen</strong><br>
+      <img src="./assets/images/cart.png" width="200"/>
+    </td>
+  </tr>
+
+ <tr>
+    <td align="center">
+      <strong>🔓 Favourite Screen</strong><br>
+      <img src="./assets/images/favourite.png" width="200"/>
+    </td>
+<td align="center">
+      <strong>🔓 Payment Screen</strong><br>
+      <img src="./assets/images/payment.png" width="200"/>
+    </td>
+  </tr>
+
+ <tr>
+    <td align="center">
+      <strong>🔓 Payment Screen</strong><br>
+      <img src="./assets/images/payment1.png" width="200"/>
+    </td>
+<td align="center">
+      <strong>🔓 Payment Success Screen</strong><br>
+      <img src="./assets/images/payment_success.png" width="200"/>
+    </td>
+  </tr>
+
+ <tr>
+    <td align="center">
+      <strong>🔓 Order Confirm Screen</strong><br>
+      <img src="./assets/images/order_confirm.png" width="200"/>
+    </td>
+<td align="center">
+      <strong>🔓 Order Screen</strong><br>
+      <img src="./assets/images/total_order.png" width="200"/>
+    </td>
+  </tr>
+
+<tr>
+    <td align="center">
+      <strong>🔓 Profile Screen</strong><br>
+      <img src="./assets/images/profile.png" width="200"/>
+    </td>
+<td align="center">
+      <strong>🔓 Category Screen</strong><br>
+      <img src="./assets/images/category.png" width="200"/>
     </td>
   </tr>
 </table>

@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.easyshop.pages.CategoryProductPage
 import com.example.easyshop.pages.CheckoutPage
+import com.example.easyshop.pages.OrderPage
 import com.example.easyshop.pages.ProductDetailsPage
 import com.example.easyshop.screen.AuthScreen
 import com.example.easyshop.screen.HomeScreen
@@ -38,10 +39,12 @@ fun AppNavigation(modifier: Modifier=Modifier){
        composable("home",) {
           HomeScreen(modifier,navController,authViewModel)
        }
-       composable("category-products/{categoryId}") {
-           val categoryId = it.arguments?.getString("categoryId")
-           CategoryProductPage(modifier,categoryId?:"")
+
+       composable("category-products/{categoryId}") { backStackEntry ->
+           val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
+           CategoryProductPage(navController = navController, categoryId = categoryId)
        }
+
        composable("product-details/{productId}") {
            val productId = it.arguments?.getString("productId")
            ProductDetailsPage(modifier,productId?:"")
@@ -49,6 +52,10 @@ fun AppNavigation(modifier: Modifier=Modifier){
 
        composable("checkout") {
            CheckoutPage(modifier)
+       }
+
+       composable("orders") {
+           OrderPage(modifier)
        }
    }
 }

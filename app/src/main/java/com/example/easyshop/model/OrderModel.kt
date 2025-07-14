@@ -1,11 +1,14 @@
 package com.example.easyshop.model
 
+import com.google.firebase.Timestamp
+import com.google.rpc.Status
+
 data class OrderModel(
-    val userId: String = "",
-    val userName: String = "",
-    val address: String = "",
-    val items: Map<String, Long> = emptyMap(),
-    val totalAmount: Float = 0f,
-    val status: String = "Placed",
-    val timestamp: Long = System.currentTimeMillis()
+    val id :String = "",
+    val date : Timestamp = Timestamp.now(),
+    val userId:String ="",
+    val items:Map<String,Long> = mapOf(),
+    val status: String = "",
+    val address:String= ""
+
 )

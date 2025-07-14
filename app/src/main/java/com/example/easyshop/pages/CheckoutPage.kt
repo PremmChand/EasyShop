@@ -9,9 +9,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
@@ -34,45 +41,29 @@ import androidx.navigation.NavController
 import com.example.easyshop.GlobalNavigation
 import com.example.easyshop.GlobalNavigation.navController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckoutPage(modifier: Modifier) {
     val context = LocalContext.current
-    val userModel = remember {
-        mutableStateOf(UserModel())
-    }
+    val userModel = remember { mutableStateOf(UserModel()) }
 
-    val productList = remember {
-        mutableStateListOf(ProductModel())
-    }
+    val productList = remember { mutableStateListOf(ProductModel()) }
+    val subTotal = remember { mutableStateOf(0f) }
+    val discount = remember { mutableStateOf(0f) }
+    val tax = remember { mutableStateOf(0f) }
+    val total = remember { mutableStateOf(0f) }
 
-    val subTotal = remember {
-        mutableStateOf(0f)
-    }
-
-    val discount = remember {
-        mutableStateOf(0f)
-    }
-    val tax = remember {
-        mutableStateOf(0f)
-    }
-    val total = remember {
-        mutableStateOf(0f)
-    }
-
-    fun calculateAndAssign(){
-        productList.forEach{
-            if(it.actualPrice.isNotEmpty()){
-                val qty = userModel.value.cartItems[it.id] ?:0
+    fun calculateAndAssign() {
+        productList.forEach {
+            if (it.actualPrice.isNotEmpty()) {
+                val qty = userModel.value.cartItems[it.id] ?: 0
                 subTotal.value += it.actualPrice.toFloat() * qty
             }
         }
-
-        discount.value = subTotal.value * (AppUtil.getDiscountPercentage()) /100
-        tax.value = subTotal.value * (AppUtil.getTaxPercentage()) /100
-        total.value ="%.2f".format(subTotal.value - discount.value + tax.value).toFloat()
-
+        discount.value = subTotal.value * (AppUtil.getDiscountPercentage()) / 100
+        tax.value = subTotal.value * (AppUtil.getTaxPercentage()) / 100
+        total.value = "%.2f".format(subTotal.value - discount.value + tax.value).toFloat()
     }
-
 
     LaunchedEffect(Unit) {
         Firebase.firestore.collection("users")
@@ -80,14 +71,14 @@ fun CheckoutPage(modifier: Modifier) {
             .get().addOnCompleteListener {
                 if (it.isSuccessful) {
                     val result = it.result.toObject(UserModel::class.java)
-                    if (result!=null){
+                    if (result != null) {
                         userModel.value = result
 
                         Firebase.firestore.collection("banners")
                             .document("stock").collection("products")
                             .whereIn("id", userModel.value.cartItems.keys.toList())
-                            .get().addOnCompleteListener{ task ->
-                                if(task.isSuccessful){
+                            .get().addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
                                     val resultProducts = task.result.toObjects(ProductModel::class.java)
                                     productList.addAll(resultProducts)
                                     calculateAndAssign()
@@ -98,100 +89,108 @@ fun CheckoutPage(modifier: Modifier) {
             }
     }
 
-    Column(modifier =modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
-        Text(text = "Checkout", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Deliver to : ", fontWeight = FontWeight.Bold)
-        Text(text = userModel.value.name)
-        Text(text = userModel.value.address)
-        Spacer(modifier = Modifier.height(16.dp))
-        HorizontalDivider()
-        Spacer(modifier = Modifier.height(16.dp))
-        RowCheckoutItems(title = "Subtotal", value = subTotal.value.toString())
-        Spacer(modifier = Modifier.height(16.dp))
-        RowCheckoutItems(title = "Discount (-)", value = discount.value.toString())
-        Spacer(modifier = Modifier.height(16.dp))
-        RowCheckoutItems(title = "Tax (+)", value = tax.value.toString())
-        HorizontalDivider()
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(modifier = Modifier.fillMaxWidth(),
-            text = "To Pay", textAlign = TextAlign.Center)
 
-        Text(modifier = Modifier.fillMaxWidth(),
-            text = "$"+total.value.toString(),
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-       )
-
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                placeOrder(
-                    userModel.value,
-                    total.value,
-                    context,
-                    onSuccess = {
-                        Toast.makeText(context, "Order placed successfully!", Toast.LENGTH_LONG).show()
-                        navController.navigate("home") {
-                            popUpTo("checkout") { inclusive = true }
-                        }
-                    },
-                    onError = {
-                        Toast.makeText(context, "Failed to place order", Toast.LENGTH_SHORT).show()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Orders") },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        GlobalNavigation.navController.popBackStack()
+                    }) {
+                        Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Back")
                     }
+                }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = modifier
+                .padding(padding)
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Text(text = "Deliver to : ", fontWeight = FontWeight.Bold)
+            Text(text = userModel.value.name)
+            Text(text = userModel.value.address)
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(16.dp))
+            RowCheckoutItems(title = "Subtotal", value = subTotal.value.toString())
+            Spacer(modifier = Modifier.height(16.dp))
+            RowCheckoutItems(title = "Discount (-)", value = discount.value.toString())
+            Spacer(modifier = Modifier.height(16.dp))
+            RowCheckoutItems(title = "Tax (+)", value = tax.value.toString())
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "To Pay", textAlign = TextAlign.Center
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "$" + total.value.toString(),
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .padding(top = 8.dp),
+                onClick = {
+                    AppUtil.startPayment(total.value)
+                }
+            ) {
+                Text(
+                    "Pay Now",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
-        ) {
-            Text("Place Order")
         }
-
     }
-
-
-
 }
 
-fun placeOrder(
-    user: UserModel,
-    totalAmount: Float,
-    context: android.content.Context,
-    onSuccess: () -> Unit,
-    onError: () -> Unit
-) {
-    val order = OrderModel(
-        userId = FirebaseAuth.getInstance().currentUser?.uid ?: "",
-        userName = user.name,
-        address = user.address,
-        items = user.cartItems,
-        totalAmount = totalAmount
-    )
-
-    Firebase.firestore.collection("orders")
-        .add(order)
-        .addOnSuccessListener {
-            // Clear cart in Firestore
-            Firebase.firestore.collection("users")
-                .document(order.userId)
-                .update("cartItems", emptyMap<String, Int>())
-                .addOnSuccessListener {
-                    onSuccess()
-                }
-                .addOnFailureListener {
-                    onError()
-                }
-        }
-        .addOnFailureListener {
-            onError()
-        }
-
-
-}
+//fun placeOrder(
+//    user: UserModel,
+//    totalAmount: Float,
+//    context: android.content.Context,
+//    onSuccess: () -> Unit,
+//    onError: () -> Unit
+//) {
+//    val order = OrderModel(
+//        userId = FirebaseAuth.getInstance().currentUser?.uid ?: "",
+//        userName = user.name,
+//        address = user.address,
+//        items = user.cartItems,
+//        totalAmount = totalAmount
+//    )
+//
+//    Firebase.firestore.collection("orders")
+//        .add(order)
+//        .addOnSuccessListener {
+//            // Clear cart in Firestore
+//            Firebase.firestore.collection("users")
+//                .document(order.userId)
+//                .update("cartItems", emptyMap<String, Int>())
+//                .addOnSuccessListener {
+//                    onSuccess()
+//                }
+//                .addOnFailureListener {
+//                    onError()
+//                }
+//        }
+//        .addOnFailureListener {
+//            onError()
+//        }
+//
+//
+//}
 
 @Composable
     fun RowCheckoutItems(title:String,value: String){
