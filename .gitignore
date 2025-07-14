@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+# Ignore Google Services config
+app/google-services.json
+
+# Ignore generated files
+**/build/

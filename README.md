@@ -184,4 +184,9 @@ com.example.easyshop
       <img src="./assets/images/category.png" width="200"/>
     </td>
   </tr>
+
+<p align="center">
+  <b>👨‍💻 Developed by Premm Chand</b>
+</p>
+
 </table>
