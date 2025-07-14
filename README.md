@@ -185,8 +185,10 @@ com.example.easyshop
     </td>
   </tr>
 
+
+</table>
+
 <p align="center">
   <b>👨‍💻 Developed by Premm Chand</b>
 </p>
 
-</table>
